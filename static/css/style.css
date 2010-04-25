@@ -1,0 +1,15 @@
+/* hn color scheme    */
+/* offwhite : #f6f6ee */
+/* orange   : #9a9a9a */
+/* gray     : #f36a00 */
+
+body{
+  font-family:Verdana; 
+  font-size:  9pt;
+
+}
+
+#content{
+  background-color: #f6f6ee;
+}
+

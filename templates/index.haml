@@ -1,0 +1,25 @@
+%html{:xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", :lang => "en"}
+  %head
+    %title hckrn.ws
+    %meta(name="viewport" content="user-scalable=no width=device-width")
+    %script(src="/static/js/jquery.min.js")
+    / %link(rel="stylesheet" type="text/css" href="/static/css/reset-min.css")
+    %link(rel="stylesheet" type="text/css" href="/static/css/style.css")
+
+  %body
+
+    #content
+      .title
+        %h1 HCKRN.WS
+
+        %ul
+          %li foo
+          %li baz
+          %li bar
+
+        {{title}} spends {{calc}} 
+
+        {{#truthy}} I will be visible if condition is true {{/truthy}} 
+
+        {{#falsy}} I will be visible if condition is true {{/falsy}}
+
