@@ -8,3 +8,7 @@ are events
 
 Add support for refreshing cache from repl
 updateCache();
+
+scripts
+  checkin to school svn 
+  deploy.sh
