@@ -1,0 +1,7 @@
+Are events fast finds that evented servers (even artifical ones) are fast (caveat, their workload is serving a static 305 byte file), Apache is the slowest in their results
+
+Want to graph memory usage vs concurrent connections
+ala http://blog.webfaction.com/a-little-holiday-present
+
+
+
