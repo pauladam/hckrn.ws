@@ -3,21 +3,48 @@
     <title>hckrn.ws</title>
     <meta content='user-scalable=no width=device-width' name='viewport' />
     <script src='/static/js/jquery.min.js'></script>
-    <!-- %link(rel="stylesheet" type="text/css" href="/static/css/reset-min.css") -->
     <link href='/static/css/style.css' rel='stylesheet' type='text/css' />
+    <link href='/static/img/h.ico' rel='icon' />
   </head>
   <body>
     <div id='content'>
-      <div class='title'>
-        <h1>HCKRN.WS</h1>
-        <ul>
-          <li>foo</li>
-          <li>baz</li>
-          <li>bar</li>
-        </ul>
-        {{title}} spends {{calc}}
-        {{#truthy}} I will be visible if condition is true {{/truthy}}
-        {{#falsy}} I will be visible if condition is true {{/falsy}}
+      <div id='title_bar'>
+        <div id='logo'>
+          HNM
+        </div>
+        <h2>
+          HCKRN.WS &#124;
+        </h2>
+        <a href=''>
+          <h6>(news.ycombinator.org)--</h6>
+        </a>
+      </div>
+      <ol>
+        {{#items}}
+        <li>
+          <a href='{{link}}'>
+            <span>{{title}}</span>
+          </a>
+          <br />
+          <span class='link_detail offw'>
+            <span>
+              {{ domain }}  &#124;
+            </span>
+            <span>
+              <a href='{{comments}}'>
+                comments
+              </a>
+            </span>
+          </span>
+          <br />
+        </li>
+        {{/items}}
+      </ol>
+      <a class='next' href='{{nextPage}}'>
+        More
+      </a>
+      <div class='bottom_bar'>
+        &nbsp;
       </div>
     </div>
   </body>

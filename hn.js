@@ -2,65 +2,116 @@
 var fs       = require('fs'), 
     sys      = require('sys'), 
     net      = require('net'), 
+    url      = require('url'), 
     repl     = require('repl'), 
     http     = require('http'),
     mustache = require('./lib/mustache'),
     couchdb  = require('node-couchdb/lib/couchdb'),
-    hashlib  = require("/home/paul/hashlib/build/default/hashlib");
+    hashlib  = require("/home/paul/hashlib/build/default/hashlib"),
+    cradle  = require('./lib/cradle/lib/cradle');
 
-var INTERVAL = 3000,
-    couch_client = couchdb.createClient(5984, 'localhost'),
-    db = couch_client.db('hnlinks');
+var cradleConnection = new(cradle.Connection), 
+    cradleDb = cradleConnection.database('hnlinks'),
+    RSS_REFRESH_INTERVAL = 1000 * 60,
+    couchLinks = []; 
 
-// Make / Save our query view
-var get_links_view = function(doc){ emit(doc.title, doc); }
-db.saveDesign('designs', { views: { "get-links": { map: get_links_view } } });
+var client = couchdb.createClient(5984, 'localhost'),
+    db = client.db('hnlinks');
+
+var indexTempl ='';
+fs.readFile('templates/index.html','utf8',function(err, fileData){ indexTempl = fileData; });
+
+// Test save design doc
+db.saveDesign('nice', {
+  views: {
+    one: {
+      map: function() {
+        emit(doc.added, null)
+      }
+    }
+  }
+}, function(er, r) {
+  // if (er) throw new Error(JSON.stringify(er));
+});
+
+cradleDb.insert('vador', { name: 'darth', force: 'dark' }, function (err, res) { });
+
+// This structure allows us to redefine the view on
+// each server start
+// cradleDb.get('_design/get-links', function(err, doc){ 
+//   var viewRev = doc._rev || "1-123";
+//   cradleDb.remove('_design/get-links', viewRev, function(err, res){ 
+// 
+//     cradleDb.insert('_design/get-links', {
+//         all: {
+//             map: function (doc) {
+//               if(doc.title != null){
+//                 emit(doc.added, doc);
+//               }
+//             }
+//         },
+//         darkside: {
+//             map: function (doc) {
+//                 if (doc.name && doc.force == 'dark') {
+//                     emit(null, doc);
+//                 }
+//             }
+//         }
+//     }, function(err, res){ // Result of view insertion
+//       // err, res
+//     });
+//   });
+// });
+
 
 setInterval(function(){
   sys.puts('.');
 
-  var hn_json_pipe_url = 'pipes.yahoo.com',
-      hn_json_pipe_path = '/pipes/pipe.run?_id=d0055a6b6e73c5256e4818f02e659a81&_render=json',
-      connection = http.createClient(80, hn_json_pipe_url),
-      req_headers = { "host": hn_json_pipe_url, 
+  var HNJsonPipeUrl = 'pipes.yahoo.com',
+      HNJsonPipePath = '/pipes/pipe.run?_id=d0055a6b6e73c5256e4818f02e659a81&_render=json',
+      connection = http.createClient(80, HNJsonPipeUrl),
+      reqHeaders = { "host": HNJsonPipeUrl, 
                       "User-Agent": "NodeJS HTTP Client", },
-      req = connection.request('GET', hn_json_pipe_path, req_headers);
+      req = connection.request('GET', HNJsonPipePath, reqHeaders);
 
   req.addListener('response', function (res) {
 
-    var json_data = '';
+    var jsonData = '';
     res.setEncoding('utf8');
     res.addListener('data', function (chunk) { 
-      json_data += chunk; 
+      jsonData += chunk; 
     });
     res.addListener('end', function(){
 
-      var value = eval('(' + json_data +')');
+      var value = eval('(' + jsonData +')');
       
       try{
         var links = value['value']['items'];
       
-        var new_docs = [];
+        var newDocs = [];
         for(var i=0;i<links.length;i++){
 
-          var cur_link      = links[i],
-              item_link     = cur_link['link'],
-              item_title    = cur_link['title'],
-              item_comments = cur_link['comments'],
-              item_hash     = hashlib.md5(item_title);
+          var curLink      = links[i],
+              itemLink     = curLink['link'],
+              itemTitle    = curLink['title'],
+              itemComments = curLink['comments'],
+              itemHash     = hashlib.md5(itemTitle);
+              itemDomain   = url.parse(itemLink).protocol + 
+                             '//' + url.parse(itemLink).host; 
 
-          var new_doc = { _id      : item_hash,
-                          link     : item_link, 
-                          title    : item_title,
-                          comments : item_comments,
-                          hash     : item_hash,
-                          added    : Date.now() };
+          var newDoc = {  _id      : itemHash,
+                          link     : itemLink, 
+                          hash     : itemHash,
+                          title    : itemTitle,
+                          domain   : itemDomain,
+                          added    : Date.now(),
+                          comments : itemComments }
 
-          new_docs.push(new_doc);
+          newDocs.push(newDoc);
 
         }
 
-        db.bulkDocs({ docs: new_docs}, function(err, result){ });
+        cradleDb.insert(newDocs, function(err, res){ sys.puts(err); sys.puts(res); });
 
       }catch(TypeError){
         // This is the response to some other request, ignore
@@ -69,32 +120,83 @@ setInterval(function(){
   });
   req.end();
 
-}, INTERVAL);
+}, RSS_REFRESH_INTERVAL);
+
+// setInterval(function(){ 
+// 
+//   db.view('designs', 'get-links', {limit: 10 }, function(er, r){ 
+//     r.rows.forEach(function(e){ couchLinks.push(e.value); });
+// 
+//     sys.puts(JSON.stringify(couchLinks));
+//   });
+// 
+//   
+// }, 2000);
+
+// another set interval here to refresh
+// json obj w/ data from couch
+//    db.view('designs', 'get-links', {limit:1}, function(er, r){ 
+//      sys.puts('foo');
+//
+//    });
+//
+// then just refer to data statically below for serving
+
+// needed
+cradleDb.view('get-links/by-time', function (err, res) { });
+
+// support 10 pages
+linksIndex = { };
+// var linksIndex = { };
+
+var NUM_PAGES = 10;
+var ITEMS_PER_PAGE = 20;
+
+// pre-fetch the page links
+for(var i=0;i<= NUM_PAGES;i++){
+
+  cradleDb.view('get-links/by-time', 
+                {limit: ITEMS_PER_PAGE, descending: true, skip: (i) * ITEMS_PER_PAGE }, 
+                function (cerr, res) {
+
+    var page = Math.floor(res.offset / ITEMS_PER_PAGE) + 1;
+    var curPageDocs = [];
+    res.forEach(function(i, doc){ curPageDocs.push(doc); sys.puts(doc.added); });
+    linksIndex[page] = curPageDocs;
+
+  });
+
+}
 
 http.createServer(function (request, response) {
 
-  // db query for some links here...
-  // db.view('designs',
-  response.writeHead(200, {'Content-Type': 'text/html'});
+  // Fix link indexes on page
 
-  var view = {
-    title: "Joe",
-    truthy: true,
-    falsy: false,
-    calc: function() {
-      return 2 + 4;
+  var href = url.parse(request.url).href;
+  var page = parseInt(href.replace('/',''));
+  page = page || 1;
+
+  if( href.match(/\/\d/) || href.match(/\//) ){
+
+    try{
+
+      response.writeHead(200, {'Content-Type': 'text/html'});
+      response.end(mustache.to_html(indexTempl, 
+                                   { items: linksIndex[page], 
+                                     nextPage : page < 10 && ( page + 1 ) || '/' } ));
+
+    }catch(e){
+
+      sys.puts(e);
+      response.writeHead(500, {'Content-Type': 'text/html'});
+      response.end("server exception");
+
     }
+
   }
-
-  fs.readFile('templates/index.html','utf8',function(err, data){ 
-
-    response.end(mustache.to_html(data, view));
-
-  });
 
 
 }).listen(8000);
 
 sys.puts('Server running at http://127.0.0.1:8000/');
-
 repl.start('simple tcp server> ');

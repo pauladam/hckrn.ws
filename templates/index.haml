@@ -3,23 +3,39 @@
     %title hckrn.ws
     %meta(name="viewport" content="user-scalable=no width=device-width")
     %script(src="/static/js/jquery.min.js")
-    / %link(rel="stylesheet" type="text/css" href="/static/css/reset-min.css")
     %link(rel="stylesheet" type="text/css" href="/static/css/style.css")
+    %link(rel="icon" href="/static/img/h.ico")
 
   %body
 
     #content
-      .title
-        %h1 HCKRN.WS
+      #title_bar
+        #logo
+          HNM
+        %h2 
+          HCKRN.WS &#124;
+        %a(href="")
+          %h6 (news.ycombinator.org)--
 
-        %ul
-          %li foo
-          %li baz
-          %li bar
+      %ol
+        {{#items}} 
+        %li
+          %a(href="{{link}}")
+            %span {{title}} 
+          %br
+          %span.link_detail.offw
+            %span 
+              {{ domain }}  &#124;
+            %span
+              %a(href="{{comments}}")
+                comments
+          %br
+        {{/items}}
 
-        {{title}} spends {{calc}} 
+      %a.next(href="{{nextPage}}")
+        More
 
-        {{#truthy}} I will be visible if condition is true {{/truthy}} 
+      .bottom_bar
+        &nbsp;
 
-        {{#falsy}} I will be visible if condition is true {{/falsy}}
 
