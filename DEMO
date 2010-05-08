@@ -2,4 +2,7 @@ Show couch
   couch views  futon ui
   Show ui
   Show node repl
+  
+  show updating cache from repl
+    > updateCache();
 

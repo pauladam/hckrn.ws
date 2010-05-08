@@ -6,3 +6,5 @@ want to show that rq/sec is near network max
 
 are events
 
+Add support for refreshing cache from repl
+updateCache();

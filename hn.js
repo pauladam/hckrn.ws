@@ -1,3 +1,11 @@
+// TODO Redefine the 'get-links/by-time' view
+// 
+// {
+//    "by-time": {
+//        "map": "function(doc) {\u000a  emit(doc.added, doc);\u000a}"
+//    }
+// }
+
 // requires
 var fs       = require('fs'), 
     sys      = require('sys'), 
@@ -5,6 +13,7 @@ var fs       = require('fs'),
     url      = require('url'), 
     repl     = require('repl'), 
     http     = require('http'),
+    utils    = require('./lib/utils'), 
     mustache = require('./lib/mustache'),
     couchdb  = require('node-couchdb/lib/couchdb'),
     hashlib  = require("/home/paul/hashlib/build/default/hashlib"),
@@ -12,7 +21,7 @@ var fs       = require('fs'),
 
 var cradleConnection = new(cradle.Connection), 
     cradleDb = cradleConnection.database('hnlinks'),
-    RSS_REFRESH_INTERVAL = 1000 * 60,
+    RSS_REFRESH_INTERVAL = 1000 * 10,
     couchLinks = []; 
 
 var client = couchdb.createClient(5984, 'localhost'),
@@ -21,58 +30,22 @@ var client = couchdb.createClient(5984, 'localhost'),
 var indexTempl ='';
 fs.readFile('templates/index.html','utf8',function(err, fileData){ indexTempl = fileData; });
 
-// Test save design doc
-db.saveDesign('nice', {
-  views: {
-    one: {
-      map: function() {
-        emit(doc.added, null)
-      }
-    }
-  }
-}, function(er, r) {
-  // if (er) throw new Error(JSON.stringify(er));
-});
-
+// needed for db init
 cradleDb.insert('vador', { name: 'darth', force: 'dark' }, function (err, res) { });
 
-// This structure allows us to redefine the view on
-// each server start
-// cradleDb.get('_design/get-links', function(err, doc){ 
-//   var viewRev = doc._rev || "1-123";
-//   cradleDb.remove('_design/get-links', viewRev, function(err, res){ 
-// 
-//     cradleDb.insert('_design/get-links', {
-//         all: {
-//             map: function (doc) {
-//               if(doc.title != null){
-//                 emit(doc.added, doc);
-//               }
-//             }
-//         },
-//         darkside: {
-//             map: function (doc) {
-//                 if (doc.name && doc.force == 'dark') {
-//                     emit(null, doc);
-//                 }
-//             }
-//         }
-//     }, function(err, res){ // Result of view insertion
-//       // err, res
-//     });
-//   });
-// });
+// var linksIndex = utils.getLinks(cradleDb);
+linksIndex = utils.getLinks(cradleDb);
 
+sys.puts(JSON.stringify(linksIndex));
 
 setInterval(function(){
-  sys.puts('.');
+  sys.puts('refreshing feed info');
 
-  var HNJsonPipeUrl = 'pipes.yahoo.com',
+  var HNJsonPipeUrl  = 'pipes.yahoo.com',
       HNJsonPipePath = '/pipes/pipe.run?_id=d0055a6b6e73c5256e4818f02e659a81&_render=json',
-      connection = http.createClient(80, HNJsonPipeUrl),
-      reqHeaders = { "host": HNJsonPipeUrl, 
-                      "User-Agent": "NodeJS HTTP Client", },
-      req = connection.request('GET', HNJsonPipePath, reqHeaders);
+      connection     = http.createClient(80, HNJsonPipeUrl),
+      reqHeaders     = { "host": HNJsonPipeUrl, "User-Agent": "NodeJS HTTP Client", },
+      req            = connection.request('GET', HNJsonPipePath, reqHeaders);
 
   req.addListener('response', function (res) {
 
@@ -111,7 +84,14 @@ setInterval(function(){
 
         }
 
-        cradleDb.insert(newDocs, function(err, res){ sys.puts(err); sys.puts(res); });
+        cradleDb.insert(newDocs, function(err, res){ 
+          sys.puts(err); 
+          sys.puts(res); 
+
+          // update cache
+          linksIndex = utils.getLinks(cradleDb);
+
+        });
 
       }catch(TypeError){
         // This is the response to some other request, ignore
@@ -122,55 +102,11 @@ setInterval(function(){
 
 }, RSS_REFRESH_INTERVAL);
 
-// setInterval(function(){ 
-// 
-//   db.view('designs', 'get-links', {limit: 10 }, function(er, r){ 
-//     r.rows.forEach(function(e){ couchLinks.push(e.value); });
-// 
-//     sys.puts(JSON.stringify(couchLinks));
-//   });
-// 
-//   
-// }, 2000);
-
-// another set interval here to refresh
-// json obj w/ data from couch
-//    db.view('designs', 'get-links', {limit:1}, function(er, r){ 
-//      sys.puts('foo');
-//
-//    });
-//
-// then just refer to data statically below for serving
-
-// needed
-cradleDb.view('get-links/by-time', function (err, res) { });
-
-// support 10 pages
-linksIndex = { };
-// var linksIndex = { };
-
-var NUM_PAGES = 10;
-var ITEMS_PER_PAGE = 20;
-
-// pre-fetch the page links
-for(var i=0;i<= NUM_PAGES;i++){
-
-  cradleDb.view('get-links/by-time', 
-                {limit: ITEMS_PER_PAGE, descending: true, skip: (i) * ITEMS_PER_PAGE }, 
-                function (cerr, res) {
-
-    var page = Math.floor(res.offset / ITEMS_PER_PAGE) + 1;
-    var curPageDocs = [];
-    res.forEach(function(i, doc){ curPageDocs.push(doc); sys.puts(doc.added); });
-    linksIndex[page] = curPageDocs;
-
-  });
-
-}
+sys.puts(JSON.stringify( utils.getLinks(cradleDb) ));
 
 http.createServer(function (request, response) {
 
-  // Fix link indexes on page
+  // TODO Fix link indexes on page
 
   var href = url.parse(request.url).href;
   var page = parseInt(href.replace('/',''));

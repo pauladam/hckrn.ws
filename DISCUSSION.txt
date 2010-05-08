@@ -4,4 +4,8 @@ Want to graph memory usage vs concurrent connections
 ala http://blog.webfaction.com/a-little-holiday-present
 
 
+discuss difficulties of highly async style of programming
+  scope can be confusing
+  easy to write code that doesnt execute (b/c you assume blocking style)
+  easy to write code wich executes in the wrong scope (intended to run inside a call back)
 
