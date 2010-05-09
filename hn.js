@@ -16,7 +16,7 @@ var fs       = require('fs'),
     utils    = require('./lib/utils'), 
     mustache = require('mustache.js/lib/mustache'),
     couchdb  = require('node-couchdb/lib/couchdb'),
-    hashlib  = require("/home/paul/hashlib/build/default/hashlib"),
+    hashlib  = require('hashlib/build/default/hashlib'),
     cradle  = require('./lib/cradle/lib/cradle');
 
 var cradleConnection = new(cradle.Connection), 
