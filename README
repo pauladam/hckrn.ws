@@ -1,11 +1,13 @@
+HCKRN.WS is a node.js mobile frontend for hacker news 
+
 Big ups to the awesome open source software used to build hckrn.ws
 
-* Git
-* Node.js
-* CouchDB
-* mustache.js
-* Hashlib
-* Vargs
-* Cradle 
-* NginX
-* HAML
+  * Git
+  * Node.js
+  * CouchDB
+  * mustache.js
+  * Hashlib
+  * Vargs
+  * Cradle 
+  * NginX
+  * HAML

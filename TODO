@@ -1,7 +1,4 @@
-rep the project on HN a few days before deadline
-
   * Add support for refreshing cache from repl
-  * updateCache();
-  * scripts
+    - updateCache();
   * Checkin to school svn 
   * Run couch server on private ip
