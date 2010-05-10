@@ -16,11 +16,11 @@ var fs       = require('fs'),
     utils    = require('./lib/utils'), 
     mustache = require('mustache.js/lib/mustache'),
     hashlib  = require('hashlib/build/default/hashlib'),
-    cradle  = require('./lib/cradle/lib/cradle');
+    cradle   = require('./lib/cradle/lib/cradle');
 
 var cradleConnection = new(cradle.Connection)('66.220.0.52'), 
     cradleDb = cradleConnection.database('hnlinks'),
-    RSS_REFRESH_INTERVAL = 1000 * 60 * 10,
+    RSS_REFRESH_INTERVAL = 1000 * 60 * 30,
     couchLinks = []; 
 
 var indexTempl ='';
