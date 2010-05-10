@@ -79,9 +79,6 @@ setInterval(function(){
         }
 
         cradleDb.insert(newDocs, function(err, res){ 
-          sys.puts(err); 
-          sys.puts(res); 
-
           // update cache
           linksIndex = utils.getLinks(cradleDb);
 
@@ -95,8 +92,6 @@ setInterval(function(){
   req.end();
 
 }, RSS_REFRESH_INTERVAL);
-
-sys.puts(JSON.stringify( utils.getLinks(cradleDb) ));
 
 http.createServer(function (request, response) {
 
@@ -112,7 +107,7 @@ http.createServer(function (request, response) {
 
       response.writeHead(200, {'Content-Type': 'text/html'});
       response.end(mustache.to_html(indexTempl, 
-                                   { items: linksIndex[page], 
+                                   { items: linksIndex[page].concat(), 
                                      nextPage : page < 10 && ( page + 1 ) || '/' } ));
 
     }catch(e){

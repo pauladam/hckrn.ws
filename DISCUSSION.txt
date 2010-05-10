@@ -12,4 +12,17 @@ discuss difficulties of highly async style of programming
 
 compare load time of HN vs HNM
 
+want to show that rq/sec is near network max
+
+graph memory during long AB test
+
+give a shoutout to project maintainers (mustache, etc)
+
+Serving static files w/ NGINX
+
+
+spooky actions at distances
+
+difficulty w/ insuring ordering - leads to highly nested callback code
+can continuation-type things help w/ legibility ?
 

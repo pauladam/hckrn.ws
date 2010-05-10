@@ -1,123 +1,21 @@
-/* hn color scheme    */
-/* offwhite : #f6f6ee */
-/* orange   : #f36600 */
-/* gray     : #f36a00 */
-
-body{
-  font-family:Verdana; 
-  font-size:  9pt;
-}
-
-ol{ 
- margin-left: 30px;
- padding: 5px;
-}
-
-.offw{ color: #828282; }
-
-#content{
-  background-color: #f6f6ee;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-body  { font-family:Verdana; font-size:10pt; color:#828282; }
-td    { font-family:Verdana; font-size:10pt; color:#828282; }
-
-.admin td   { font-family:Verdana; font-size:8.5pt; color:#000000; }
-.subtext td { font-family:Verdana; font-size:  7pt; color:#828282; }
-
-input    { font-family:Courier; font-size:10pt; color:#000000; }
-input[type="submit"] { font-family:Verdana; }
-textarea { font-family:Courier; font-size:10pt; color:#000000; }
-
-a:link    { color:#000000; text-decoration:none; }
-a:visited { color:#525252; text-decoration:none; }
-
-.default { font-family:Verdana; font-size: 10pt; color:#828282; }
-.admin   { font-family:Verdana; font-size:8.5pt; color:#000000; }
-.title   { font-family:Verdana; font-size: 10pt; color:#525252; }
-.adtitle { font-family:Verdana; font-size:  9pt; color:#828282; }
-.subtext { font-family:Verdana; font-size:  7pt; color:#828282; }
-.yclinks { font-family:Verdana; font-size:  8pt; color:#828282; }
-.pagetop { font-family:Verdana; font-size: 10pt; color:#222222; }
-.comhead { font-family:Verdana; font-size:  8pt; color:#828282; }
-.comment { font-family:Verdana; font-size:  9pt; }
-.dead    { font-family:Verdana; font-size:  9pt; color:#dddddd; }
-
-.comment a:link, .comment a:visited { text-decoration:underline;}
-.dead a:link, .dead a:visited { color:#dddddd; }
-.pagetop a:visited { color:#000000;}
-.topsel a:link, .topsel a:visited { color:#ffffff; }
-
-.subtext a:link, .subtext a:visited { color:#828282; }
-.subtext a:hover { text-decoration:underline; }
-
-.comhead a:link, .subtext a:visited { color:#828282; }
-.comhead a:hover { text-decoration:underline; }
-
-.default p { margin-top: 8px; margin-bottom: 0px; }
-
-.pagebreak {page-break-before:always}
-
-pre { overflow: auto; padding: 2px; max-width:600px; }
-pre:hover {overflow:auto}
-
-#title_bar{
-  background-color: #f36600;
-  color: #000;
-  height: 26px;
-  padding: 0px;
-  margin: 0px;
-}
-
-#title_bar h2{
-  display: inline;
-  font-size: 19px;
-  margin-right: 0px;
-  padding-right: 0px;
-}
-
-#title_bar h6{
-  display: inline;
-  vertical-align: text-top;
-  color: #222;
-  font-size: 8px;
-  letter-spacing: -1px;
-}
-
-#title_bar a:visited{ color: #000; }
-
-#logo{
-  border: 1px solid #fff;
-  color: #fff;
-  float: left;
-  font-weight: bold;
-  font-size: 14px;
-  height: 14px;
-  width: 38px;
-  padding-left: 1px;
-  padding-top: 0px;
-  padding-bottom: 4px;
-  margin-left: 2px;
-  margin-top: 3px;
-  margin-right: 5px;
-  margin-bottom: 3px;
-
-}
-
-.link_detail{
-  font-size:10px;
-}
-
-.bottom_bar{
-  width:100%;
-  background-color: #ff6600;
-  height: 2px;
-}
-
-.next{
-  margin-left: 20px;
-  font-size: 13px;
-}
-  
+body{font-family:Verdana;font-size:9pt;}
+ol{margin-left:30px;padding:5px;}
+.offw{color:#828282;}
+#content{background-color:#f6f6ee;margin-left:10px;margin-right:10px;}
+body{font-family:Verdana;font-size:10pt;color:#828282;}
+a:link{color:#000000;text-decoration:none;}
+a:visited{color:#525252;text-decoration:none;}
+.comment a:link, .comment a:visited{text-decoration:underline;}
+.dead a:link, .dead a:visited{color:#dddddd;}
+.pagetop a:visited{color:#000000;}
+.topsel a:link, .topsel a:visited{color:#ffffff;}
+.subtext a:link, .subtext a:visited{color:#828282;}
+.comhead a:link, .subtext a:visited{color:#828282;}
+#title_bar{background-color:#f36600;color:#000;height:26px;padding:0px;margin:0px;}
+#title_bar h2{display:inline;font-size:19px;margin-right:0px;padding-right:0px;}
+#title_bar h6{display:inline;vertical-align:text-top;color:#222;font-size:8px;letter-spacing:-1px;}
+#title_bar a:visited{color:#000;}
+#logo{border:1px solid #fff;color:#fff;float:left;font-weight:bold;font-size:14px;height:14px;width:38px;padding-left:1px;padding-top:0px;padding-bottom:4px;margin-left:2px;margin-top:3px;margin-right:5px;margin-bottom:3px;}
+.link_detail{font-size:10px;}
+.bottom_bar{ width:100%; background-color: #ff6600; height: 2px; }
+.next{ margin-left: 20px; font-size: 13px; }

@@ -1,15 +1,11 @@
-Using
+Big ups to the awesome open source software used to build hckrn.ws
 
-node.js
-mustache.js
-git
-haml
-
-Serving static files w/ NGINX
-
-spooky actions at distances
-
-difficulty w/ insuring ordering - leads to highly nested callback code
-can continuation-type things help w/ legibility ?
-
-mention how 
+* Git
+* Node.js
+* CouchDB
+* mustache.js
+* Hashlib
+* Vargs
+* Cradle 
+* NginX
+* HAML
