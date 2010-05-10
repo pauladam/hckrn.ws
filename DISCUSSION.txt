@@ -9,3 +9,7 @@ discuss difficulties of highly async style of programming
   easy to write code that doesnt execute (b/c you assume blocking style)
   easy to write code wich executes in the wrong scope (intended to run inside a call back)
 
+
+compare load time of HN vs HNM
+
+

@@ -86,6 +86,8 @@ pre:hover {overflow:auto}
   letter-spacing: -1px;
 }
 
+#title_bar a:visited{ color: #000; }
+
 #logo{
   border: 1px solid #fff;
   color: #fff;

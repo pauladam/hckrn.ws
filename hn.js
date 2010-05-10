@@ -15,28 +15,22 @@ var fs       = require('fs'),
     http     = require('http'),
     utils    = require('./lib/utils'), 
     mustache = require('mustache.js/lib/mustache'),
-    couchdb  = require('node-couchdb/lib/couchdb'),
     hashlib  = require('hashlib/build/default/hashlib'),
     cradle  = require('./lib/cradle/lib/cradle');
 
-var cradleConnection = new(cradle.Connection), 
+var cradleConnection = new(cradle.Connection)('66.220.0.52'), 
     cradleDb = cradleConnection.database('hnlinks'),
-    RSS_REFRESH_INTERVAL = 1000 * 10,
+    RSS_REFRESH_INTERVAL = 1000 * 60 * 10,
     couchLinks = []; 
-
-var client = couchdb.createClient(5984, 'localhost'),
-    db = client.db('hnlinks');
 
 var indexTempl ='';
 fs.readFile('templates/index.html','utf8',function(err, fileData){ indexTempl = fileData; });
-
+ 
 // needed for db init
 cradleDb.insert('vador', { name: 'darth', force: 'dark' }, function (err, res) { });
-
+ 
 // var linksIndex = utils.getLinks(cradleDb);
 linksIndex = utils.getLinks(cradleDb);
-
-sys.puts(JSON.stringify(linksIndex));
 
 setInterval(function(){
   sys.puts('refreshing feed info');
