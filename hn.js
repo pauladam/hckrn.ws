@@ -1,11 +1,3 @@
-// TODO Redefine the 'get-links/by-time' view
-// 
-// {
-//    "by-time": {
-//        "map": "function(doc) {\u000a  emit(doc.added, doc);\u000a}"
-//    }
-// }
-
 // requires
 var fs       = require('fs'), 
     sys      = require('sys'), 
@@ -13,14 +5,16 @@ var fs       = require('fs'),
     url      = require('url'), 
     repl     = require('repl'), 
     http     = require('http'),
-    utils    = require('./lib/utils'), 
     mustache = require('mustache.js/lib/mustache'),
     hashlib  = require('hashlib/build/default/hashlib'),
     cradle   = require('./lib/cradle/lib/cradle');
 
+// GLOBAL
+utils = require('./lib/utils');
+
 var cradleConnection = new(cradle.Connection)('66.220.0.52'), 
     cradleDb = cradleConnection.database('hnlinks'),
-    RSS_REFRESH_INTERVAL = 1000 * 60 * 30,
+    RSS_REFRESH_INTERVAL = 1000 * 60 * 60, // hourly
     couchLinks = []; 
 
 var indexTempl ='';
@@ -29,10 +23,14 @@ fs.readFile('templates/index.html','utf8',function(err, fileData){ indexTempl = 
 // needed for db init
 cradleDb.insert('vador', { name: 'darth', force: 'dark' }, function (err, res) { });
  
-// var linksIndex = utils.getLinks(cradleDb);
+// GLOBALS for repl access
 linksIndex = utils.getLinks(cradleDb);
 
-setInterval(function(){
+updateCache = function(){
+  linksIndex = utils.getLinks(cradleDb);
+}
+
+getFeed = function(){
   sys.puts('refreshing feed info');
 
   var HNJsonPipeUrl  = 'pipes.yahoo.com',
@@ -90,8 +88,8 @@ setInterval(function(){
     });
   });
   req.end();
-
-}, RSS_REFRESH_INTERVAL);
+}
+setInterval(getFeed, RSS_REFRESH_INTERVAL);
 
 http.createServer(function (request, response) {
 
