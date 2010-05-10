@@ -1,0 +1,1 @@
+:map <F6> :! curl -d @cdata -o c.png -X POST http://chart.apis.google.com/chart <CR>
